@@ -11,8 +11,8 @@
         \hline
         Instructor & Course ID & Section & Title & Office & Email \\
         \hline\hline
-        Painter-Wakefield, Christopher & CSCI 403 & A & DB MANAGEMENT & BB 280I
-                                       & cpainter@mines.edu \\
+        Painter-Wakefield, Christopher & CSCI 403 & A & Database Management & BB
+        280I & cpainter@mines.edu \\
         \hline
         Painter-Wakefield, Christopher & CSCI 262 & A & Data Structures & BB
         280I & cpainter@mines.edu \\
@@ -58,6 +58,11 @@
     Therefore, we say that the FD \{instructor\} \textrightarrow \{office\}
     \textit{violates} BCNF, and the relation schema is not BCNF.
 
+    \subsection{Closures}
+    Given some set of FDs $F$ on a relation schema $R$, and some subset of
+    attributes $A$, then the set $\{B_i : A \rightarrow B_i \}$ is called the
+    \textit{closure} of $A$ and is denoted $A^+$.
+
     \section{Decomposition Algorithm}
     while some relation schema is not in BCNF: \\
     \tab choose some relation schema $R$ not in BCNF \\
@@ -86,7 +91,6 @@
             faster - e.g. consider decomposing instructor \textrightarrow office.
     \end{itemize}
 
-    \columnbreak
     \section{Decomposition Example}
     Let's use the relation schema in Figure 1 as an example.
 
@@ -166,6 +170,16 @@
     By symmetry, there must also exist $t_4$ with $t_4[x] = t_1[x]$, $t_4[y] =
     t_4[y]$, $t_4[z] = t_2[z]$.
 
+    \section{Inference Rules}
+    Allow us to infer additional FDs from an existing set of FDs
+    \begin{itemize}
+        \item \textbf{Splitting rule}: If $A \rightarrow \{B_1, B_2\}$ then $A
+            \rightarrow B_1$ and $A \rightarrow B_2$
+        \item \textbf{Combining rule}: If $A \rightarrow B$ and $A \rightarrow
+            C$ then $A \rightarrow \{B, C\}$
+        \item \textbf{Transitive Rule}: If $A \rightarrow B$ and $B \rightarrow
+            C$, then $A \rightarrow C$
+    \end{itemize}
 \end{multicols*}
 
 \end{document}
