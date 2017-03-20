@@ -76,9 +76,17 @@
 
 % Other stuff
 \RequirePackage{parskip} % Remove paragraph indentation
+\RequirePackage{xspace} % Because it should be included by default
+
+% Tilde
+\RequirePackage{textcomp}
+\newcommand{\textapprox}{\raisebox{0.5ex}{\texttildelow}}
+
+% Tab
+\newcommand\tab[1][.5in]{\hspace*{#1}}
 
 % Reduce spacing between lists
-\usepackage{enumitem}
+\RequirePackage[shortlabels]{enumitem}
 \setlist{nolistsep}
 
 % Multiple columns by default

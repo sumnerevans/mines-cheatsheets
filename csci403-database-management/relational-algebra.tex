@@ -1,0 +1,264 @@
+\documentclass{../cheatsheet}
+
+\newcommand{\ra}{$\rightarrow$\xspace}
+
+\course{CSCI 406}
+\cheatsheetname{Relational Algebra}
+
+\begin{document}
+
+\begin{multicols*}{2}
+    \section{Overview}
+    \begin{itemize}
+        \item \textbf{tuple}: an ordered and named collection of values
+
+            Ex: \texttt{(`Mehta, Dinesh', `CSCI 406', `ALGORITHMS')}
+        \item \textbf{attributes}: formally, the attributes are a set
+
+            Ex: \texttt{(`instructor', `course-id', `title')}
+        \item \textbf{domain}: each attribute has associated domain from which
+            values come
+        \item \textbf{relation schema}:
+            \begin{itemize}
+                \item A relation schema $R$ is denoted as $R(A_1,
+                    A_2,\dots,A_n)$.
+                \item Has \textbf{degree} $n$
+                \item Attributes $A_i$
+                \item Each attribute has associated domain: $Dom(A_i)$
+            \end{itemize}
+
+        \item \textbf{relation or relation state}:
+            \begin{itemize}
+                \item A relation is a set of tuples $r(R)$ conforming to the
+                    relation schema: for any tuple $t \in r$ $$t = (v_1, v_2,
+                    \dots, v_n) : v_i \in Dom(A_i)$$
+
+                \item In other words: $r(R) \subseteq (dom(A_1) \times dom(A_2)
+                    \times \cdots \times dom(A_n))$
+
+                \item \textbf{In actuality} real RDBMS
+                    \begin{itemize}
+                        \item tables may contain duplicates
+                        \item no ordering of tuples
+                    \end{itemize}
+
+            \end{itemize}
+
+        \item \textbf{\texttt{NULL}}
+
+            A "value" that can exist in a relational database representing
+            \begin{itemize}
+                \item a value is unknown
+                \item value is irrelevant
+                \item value is missing
+            \end{itemize}
+
+            \textbf{problems with \texttt{NULL}}
+            \begin{itemize}
+                \item \texttt{NULL} values cannot be compared
+                    $$a = b, a\ is\ NULL, b\ is\ NULL \rightarrow false$$
+
+                    instead we have \texttt{ISNULL} operator
+            \end{itemize}
+
+        \item \textbf{constraints}
+            \begin{itemize}
+                \item on the relation schema
+                \item between relation schemas
+            \end{itemize}
+
+        \item \textbf{superkey} - A superkey of $R$ is a subset of $R$'s
+            attributes such that no relation $r(R)$ may contain tuples with
+            exactly the same values for attributes in the superkey.
+            \begin{itemize}
+                \item any superset of a superkey is also a superkey
+                \item every relation (in theory) has at least one superkey - the
+                    set of all attributes of the schema
+            \end{itemize}
+
+        \item \textbf{Key} - A superkey s.t.\ no attribute can be removed from
+            the key without destroying the superkey property: a \textit{minimal}
+            superkey
+
+        \item \textbf{Candidate Keys} - All the keys of a schema are called
+            \textit{candidate keys}
+
+        \item \textbf{Primary Key} - By convention, we choose one candidate key
+            as the \textit{primary key}
+
+            \begin{itemize}
+                \item we tend to prefer ``smaller'' keys (e.g. \texttt{crn})
+                \item in practice in SQL DB:
+                    \begin{itemize}
+                        \item primary keys impose uniqueness constraint on data
+                        \item other candidate keys $\rightarrow$ impose
+                            uniqueness constraint
+                    \end{itemize}
+            \end{itemize}
+
+        \item \textbf{Referential Integrity/Foreign Key Constraint} Constraint
+            on the relationship between relations. A \textit{foreign key} is a
+            subset of attributes of a relation schema with the property that its
+            values are either \texttt{NULL} or existing in the specified
+            attributes of a referenced table.
+    \end{itemize}
+
+    \section{Relational Theory}
+    \begin{itemize}
+        \item each relation is a \textbf{set} of tuples
+        \item tuple = set of values associated with named attributes
+        \item \textbf{Relational Algebra}
+            \begin{itemize}
+                \item useful operations that can be applied to relations
+                \item resulting algebra
+            \end{itemize}
+    \end{itemize}
+
+    \section{Unary Operations $-2 + 1$}
+    \subsection{Selection}
+    \begin{itemize}
+        \item Chooses subsets of tuples from a relation according to some
+            condition (\texttt{WHERE})
+
+        \item Letting $R$ represent some relation:
+            \(\sigma_{\text{condition}}(R)\)
+
+        \item E.g. \( \sigma_{\text{\texttt{course\_id = `CSCI 403'}}}
+            (\text{\texttt{mines\_courses}}) \)
+        \item Can use \texttt{AND}, \texttt{OR}, \texttt{NOT}, etc.
+        \item Properties of $\sigma$
+            \begin{itemize}
+                \item degree of relation (\# of attributes) is the same as the
+                    original
+                \item the number of tuples in the result $\leq$ \# tuples in
+                    original
+                \item commutative \(\sigma_{a}(\sigma_{b}(R)) =
+                    \sigma_{b}(\sigma_a(R))\)
+                \item any sequence of $\sigma$ operations can be replaced with a
+                    single $\sigma$ (using \texttt{AND})
+            \end{itemize}
+    \end{itemize}
+
+    \subsection{Projection}
+    \begin{itemize}
+        \item chooses attributes from set of attributes in a relation
+        \item parallel operation in SQL: \texttt{SELECT}
+        \item Notated:
+            \[\pi_{attr_1,attr_2,\dots}(R)\]
+        \item Example:
+            \[\pi_{instructor, course\_id}(mines\_courses)\]
+        \item Properties of $\pi$
+            \begin{itemize}
+                \item \# of tuples is always $\leq$ \# tuples in original
+                \item \textbf{not} commutative: rather
+                    \[\pi_{list_1}(\pi_{list_2}(R)) = \pi_{list_1}(R)\]
+                    if $list_1 \subset list_2$\\
+                    else, ill formed
+            \end{itemize}
+    \end{itemize}
+
+    \subsection{Renaming - $\rho$}
+    \begin{itemize}
+        \item parallel operation in SQL: \texttt{AS}
+        \item Notation:
+            \[\rho_{S(B_1, B_2,\dots)}(R) \]
+        \item Example:
+            Let table $X$ have attributes $(a, b, c)$.
+            \[\rho_{Y(d, e, f)}(X)\]
+            \begin{minted}{postgresql}
+            SELECT a AS d,
+                   b AS e,
+                   c AS f
+              FROM X as Y;
+            \end{minted}
+    \end{itemize}
+
+    \subsection{Sequences of Operations}
+    \subsubsection{Representations}
+    \begin{enumerate}
+        \item nesting: example
+            \[ \rho_{(name, courseid)}(\pi_{instructor,
+            courseid}(\sigma_{department='CS'}(mines\_courses))) \]
+            \begin{minted}{postgresql}
+        SELECT instructor AS name
+               course_id
+          FROM mines_courses
+         WHERE department = 'CS';
+            \end{minted}
+
+        \item sequence of named relations
+            \begin{align*}
+                R_1 &= \sigma_{department='CS'}(mines\_courses)\\
+                R_2 &= \pi_{instructor, course\_id}(R_1)\\
+                R_3 &= \rho_{(name, course\_id)}(R_2)
+            \end{align*}
+    \end{enumerate}
+
+    \section{Binary Operations}
+    \subsection{Set Operators}
+    \begin{itemize}
+        \item $A \cup B$ - union
+        \item $A \cap B$ - intersection
+        \item $A - B$ - difference
+    \end{itemize}
+
+    \subsubsection{Properties of Set Operators}
+    \begin{itemize}
+        \item Union, intersection are commutative and associative
+        \item Set difference is not commutative or associative
+    \end{itemize}
+
+    \subsection{Cartesian Product and Joins}
+    \begin{itemize}
+        \item $A \times B$ - pairs every tuple from $A$ with every tuple from $B$
+        \item If $A$ has $m$ attributes, $B$ has $n$, $A \times B$ has $m + n$
+            attributes $|A \times B| = |A| \times |B|$.
+        \item Typical Usage:
+            \[\sigma_{condition}(A \times B) \equiv A \bowtie_{condition} B\]
+        \item Example: \(mines\_courses \bowtie_{instructor = name}
+            mines\_eecs\_faculty\)
+    \end{itemize}
+
+    \subsection{Theta Joins}
+    \begin{itemize}
+        \item When:
+            \begin{itemize}
+                \item we have $A \bowtie_{cond} B$
+                \item condition is of general form $cond_1 AND cond_2 AND \dots$
+                \item each $cond_n$ $A_i \Theta B_j, A_i \in A, B_i \in B$
+            \end{itemize}
+            Then we call $A \bowtie_{cond}$ a \textit{theta join}: $A
+            \bowtie_{\Theta} B$
+
+        \item Further, when $\Theta$ is $=$, then $A \bowtie_\Theta B$ is called
+            and \textit{equijoin} which implies that there is some duplicate
+            data column.
+
+        \item If $A \bowtie_{cond} B$ is an equijoin and condition equates
+            attributes of $A$ with attributes of $B$ of the \textbf{same name},
+            then the join is a \textit{natural join}.
+
+            $A * B$ - books notation \\
+            $A \bowtie B$ - other people's notation
+
+            Example: both \texttt{mines\_courses} and
+            \texttt{mines\_courses\_meetings} have \texttt{crn} field. Then
+            $mines\_courses * mines\_courses\_meetings$. (Note, this
+            automatically projects away duplicate column(s).)
+    \end{itemize}
+
+    \section{Completeness}
+    You can demonstrate that: $\sigma, \pi, \cup, -, \times$ is a complete set
+    of operators for relational algebra.
+
+    \section{Odds and Ends}
+    \begin{itemize}
+        \item Division: $\div$ \textapprox inverse of $\times$ (no mirror in
+            SQL)
+        \item Aggregates and grouping: not part of basic algebra
+    \end{itemize}
+
+
+\end{multicols*}
+
+\end{document}

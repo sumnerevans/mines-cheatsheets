@@ -1,0 +1,124 @@
+\documentclass{../cheatsheet}
+\newcommand{\ra}{$\rightarrow$\xspace}
+
+\course{CSCI 406}
+\cheatsheetname{ERD \ra{} Relational Schema Algorithm}
+
+\begin{document}
+
+\begin{multicols*}{2}
+    \section{Regular Entities}
+    \begin{itemize}
+        \item make a table
+        \item simple attributes \ra{} attributes/columns
+        \item composite attributes \ra{} just the components become columns
+        \item choose a key to be the primary key
+        \item uniqueness constraints on other keys
+        \item do not include: derived and multivalued
+    \end{itemize}
+
+    \section{Weak Entities}
+    \begin{itemize}
+        \item make a table
+        \item all simple attributes \ra{} attributes
+        \item components of composite \ra{} attributes
+        \item add primary key from owning entity as attribute
+        \item make combination of partial and owning entity key \ra{} primary key
+        \item foreign key from borrowed key back to key in owning entity
+    \end{itemize}
+
+    \section{1:1 Relationships}
+    Let $R$ be a 1:1 relationship between entities $S$ and $T$.
+
+    3 choices depending on participation
+    \begin{enumerate}[(a)]
+        \item $S$ has \textbf{full} participation in $R$, take primary key of $T$
+            and add it as attribute to $S$. Make borrowed attribute a foreign key
+            back to $T$.
+        \item If both $S$ and $T$ fully participate in $R$: $S$ and $T$ can merge
+            into one table. (Option (a) is still preferred.)
+        \item Not recommended unless there is \textbf{partial} participation on both
+            sides. Add a cross-reference table. (Expanded further in step 5.)
+    \end{enumerate}
+
+    \section{1:N Relationships}
+    Let $R$ be a 1:N relationship between $S$ and $T$
+
+    2 choices depending on participation
+    \begin{enumerate}[(a)]
+        \item Assuming $T$ has full participation in $R$ (most common case), then
+            take primary key from $S$, add to $T$, and make foreign key back to $S$.
+        \item (not preferred, unless $T$ has partial participation) cross reference
+            table
+    \end{enumerate}
+
+    \section{N:M Relationships}
+    Let $R$ be an N:M relationship between $S$ and $T$.
+    \begin{itemize}
+        \item create a new table (called a cross reference table)
+        \item add as columns: primary key attribute(s) of $S$, $T$
+        \item make each "borrowed" key a foreign key reference back to origin
+        \item make all attributes primary key for new table
+    \end{itemize}
+
+    \textbf{Example:} using xref table:
+    \begin{minted}{postgresql}
+    SELECT d.name AS department, d.chair,
+           i.name AS instructor, i.office, i.email
+      FROM instructor AS i, department AS d,
+           instructor_department_xref AS x
+     WHERE x.instructor_name = i.name
+       AND x.department_name = d.name
+       AND d.name = 'Computer Science';
+    \end{minted}
+
+    \section{Multi-valued Attributes}
+    \begin{itemize}
+        \item treat like weak entity
+        \item create table containing:
+            \begin{itemize}
+                \item multivalued attribute
+                \item primary key of the entity containing attribute
+                \item whole thing is primary key
+                \item make column with the primary key of containing entity a
+                    foreign key back to the containing table
+            \end{itemize}
+    \end{itemize}
+
+    \section{N-ary Relationships}
+    \begin{itemize}
+        \item x-reference table using the primary key attributes of the
+            participating tables
+    \end{itemize}
+
+    \section{Relational Schema Derived from Above Algorithm}
+    \begin{itemize}
+        \item \texttt{course (course\_id, title, hours)} (1)
+        \item \texttt{instructor (name, office, email)} (1)
+        \item \texttt{section (course\_id, section\_id, instructor\_name)} (2, 4)
+            \begin{itemize}
+                \item FK from \texttt{section.course\_id} to \texttt{course.course\_id}
+                \item FK from \texttt{section.instructor\_name} to \texttt{instructor.name}
+            \end{itemize}
+        \item \texttt{instructor\_department\_xref(instructor\_name,
+            department\_name)} (5)
+        \item \texttt{section\_meetings(course\_id, section\_id, days, time, room)} (6)
+            \begin{itemize}
+                \item whole thing is a primary key
+                \item foreign key on \texttt{course\_id, section\_id}
+            \end{itemize}
+    \end{itemize}
+
+    \section{Example of multiple valued primary key}
+    \begin{minted}{postgresql}
+    CREATE TABLE ...
+    columnname type,
+    ...
+    primary key (col1, col2),
+    foreign key (col1) references ...
+    \end{minted}
+
+
+\end{multicols*}
+
+\end{document}

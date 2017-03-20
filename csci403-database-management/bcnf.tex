@@ -1,0 +1,146 @@
+\documentclass{../cheatsheet}
+
+\course{CSCI 406}
+\cheatsheetname{Boyce-Codd Normal Form}
+
+\begin{document}
+
+\begin{multicols*}{2}
+\section{Definition}
+A relation $R$ is a Boyce-Codd Normal Form (BCNF) if for
+every non-trivial functional dependency $X \rightarrow A$ on $R$, $X$ is a
+superkey of $R$.
+
+\section{Example}
+Consider our relation schema in Figure 1.
+
+One of the (non-trivial) functional dependencies we identified was:
+
+\begin{center}
+    instructor \textrightarrow office
+\end{center}
+
+Clearly, instructor is not a superkey of the relation.
+
+Therefore, we say that the FD instructor \textrightarrow office
+\textit{violates} BCNF, and the relation schema is not BCNF.
+
+\section{Decomposition Algorithm}
+while some relation schema is not in BCNF: \\
+\tab choose some relation schema $R$ not in BCNF \\
+\tab choose some FD $X \rightarrow Y$ on $R$ that violates BCNF \\
+\tab (optional) expand $Y$ so that $Y = X^{+}$ (closure of $X$) \\
+\tab let $Z$ be all attributes of $R$ not included in $X$ or $Y$ \\
+\tab replace $R$ with two new relations \\
+\tab\tab $R_1$, containing attributes ${X, Y}$ \\
+\tab\tab $R_2$, containing attributes ${X, Z}$
+
+Note, this algorithm is \textbf{\textit{not}} deterministic - you can decompose
+differently if you choose differently
+
+\section{Decomposition Notes}
+\begin{itemize}
+    \item The final step above is accomplished simply by projection onto the
+        attributes in $R_1$ and $R_2$. (Recall that this may result in fewer
+        tuples.)
+
+    \item After decomposing, you will need to establish which FDs now apply to
+        $R_1$ and $R_2$ as well as determine their superkeys, in order to
+        determine if they are now in BCFN.
+
+    \item The optional step of expanding $Y$ is recommended, as it tends to
+        result in fewer larger relation schemas, and may reduce the problem
+        faster - e.g. consider decomposing instructor \textrightarrow office.
+\end{itemize}
+
+\section{Decomposition Example}
+Let's use the relation schema in Figure 1 as an example.
+
+For this schema, we listed the following FDs:
+
+\begin{itemize}
+    \item instructor \textrightarrow office (violates BCNF)
+    \item instructor \textrightarrow email (violates BCNF)
+    \item \{course id, section\} \textrightarrow instructor (does not violate
+        BCNF)
+    \item course id \textrightarrow title (violates BCNF)
+\end{itemize}
+
+What superkeys do we have?
+
+Answer: any superset of our only key, which is \{course id, section\}.
+
+\begin{itemize}
+    \item Let's pick our first violating FD to work with first: instructor
+        \textrightarrow office
+    \item Next, expand the RHS as much as possible (we want the closure of
+        instructor)
+
+        \begin{center}
+            instructor \textrightarrow \{instructor, office, email\}
+        \end{center}
+    \item Now we decompose into two new tables, shown in the next slide:
+        \begin{itemize}
+            \item $R_1 = \pi_{instructor,\ office,\ email}(R)$
+            \item $R_2 = \pi_{instructor,\ course\ id,\ section,\ title}(R)$
+        \end{itemize}
+    \item Now table $R_1$ is in BCNF (note that this is not guaranteed by the
+        algorithm -- we could have had other violating FDs)
+    \item Table $R_2$ has a violating FD though: course id \textrightarrow title
+    \item Decomposition of $R_2$ via course id \textrightarrow title:
+        \[\text{course\_id}^+ = \{\text{course\_id, title}\}\]
+    \item Decompose into
+        \[R_3 = \pi_{\text{course\_id, title}}(R_2)\]
+        \[R_4 = \pi_{\text{instructor, course\_id, title}}(R_2)\]
+    \item Done!
+        \begin{itemize}
+            \item Three tables remain: $R_1$, $R_3$, $R_4$
+            \item All non-essential redundancy has been removed
+            \item Each table now represents a fundamental entity
+                \begin{itemize}
+                    \item $R_1$ = instructor info
+                    \item $R_3$ = course info
+                    \item $R_4$ = section info
+                \end{itemize}
+        \end{itemize}
+\end{itemize}
+
+\section{Review}
+\begin{itemize}
+    \item \textbf{Superkey}: a subset $X$ of attributes of $R$: no two tuples of
+        $R$ will ever agree on $X$.
+    \item \textbf{FD (Functional Dependency)}: $X \rightarrow Y$ on $R$:
+        whenever two tuples agree on $X$, they must also agree on $Y$.
+    \item if $a$ is a superkey $a \rightarrow \{a, b, \dots\}$
+\end{itemize}
+
+\section{Correctness of Decomposition}
+Two requirements for correct decomposition so that we can recover original
+relation from decomposition using natural joins
+
+\begin{enumerate}
+    \item natural join of decomposition must contain all attributes of the
+        original relation
+    \item lossless join property: natural join of decomposition relations
+        results in exactly the same tuples we had before decomposition
+\end{enumerate}
+
+\section{Multivalued Dependencies (MVD)}
+\textbf{Def:} An MVD $X \twoheadrightarrow Y$ exists on a relation $R$ if
+whenever there are two tuples $t_1$ and $t_2$ which agree on attribute $X$, then
+there also exists a tuple $t_3$ (which could be $t_1$ or $t_2$) such that the
+following are true:
+
+\begin{enumerate}
+    \item $t_3[x] = t_1[x] = t_2[x]$
+    \item $t_3[y] = t_2[y]$
+    \item $t_3[z] = t_1[z]$ where $z$ is everything in $R$ \textit{not} in $X$
+        and $Y$.
+\end{enumerate}
+
+By symmetry, there must also exist $t_4$ with $t_4[x] = t_1[x]$, $t_4[y] =
+t_4[y]$, $t_4[z] = t_2[z]$.
+
+\end{multicols*}
+
+\end{document}
