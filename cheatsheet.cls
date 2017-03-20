@@ -41,7 +41,7 @@
 \newcommand{\cheatsheetname}[1]{\renewcommand{\@cheatsheetname}{#1}}
 
 % Set page margin size using the geometry package
-\RequirePackage[margin=0.2in,headsep=0.1in,footskip=0.1in,includefoot,includehead]{geometry}
+\RequirePackage[margin=0.3in,headsep=0.1in,footskip=0.1in,includefoot,includehead]{geometry}
 
 % Minted to make code look awesome
 \RequirePackage{minted}
@@ -58,7 +58,7 @@
 \RequirePackage{titlesec}
 
 \pagenumbering{gobble}
-\titleformat{\section}{\normalfont\fontsize{13pt}{13pt}\scshape\bfseries\raggedright}{\thesection}{1em}{}
+\titleformat{\section}{\normalfont\fontsize{12pt}{12pt}\scshape\bfseries\raggedright}{\thesection}{1em}{}
 \titleformat{\subsection}{\normalfont\fontsize{10pt}{10pt}\scshape\bfseries\raggedright}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}{\normalfont\fontsize{10pt}{10pt}\scshape\bfseries\raggedright}{\thesubsubsection}{1em}{}
 \titlespacing{\section}{0pt}{0.5\parskip}{-0.5\parskip}

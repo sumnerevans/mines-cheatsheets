@@ -94,6 +94,124 @@
             attribute3 type3
         )
     \end{minted}
+    \begin{minted}{postgresql}
+        CREATE TABLE yourid.stuff (
+            id serial PRIMARY KEY,
+            stuff_id integer REFERENCES yourid.stuff(id), --foreign key inline
+            name text NOT NULL,
+            PRIMARY KEY (name, age) --implies not null constraints on name, age,
+
+            -- Or can use this to declare foreign key
+            FOREIGN KEY (stuff_id) REFERENCES yourid.stuff(id)
+        );
+    \end{minted}
+
+    \section{Types}
+    \begin{itemize}
+        \item Integer Types
+            \begin{itemize}
+                \item \texttt{INTEGER} (32 bit)
+                \item \texttt{SMALLINT} (16 bit)
+                \item \texttt{BIGINT} (64 bit)
+                \item \texttt{SERIAL} auto-incrementing integer
+            \end{itemize}
+
+        \item Fixed precision numeric
+            \begin{itemize}
+                \item \texttt{NUMERIC(w, p)}
+                \item \texttt{DECIMAL(w, p)} (an alias for \texttt{NUMERIC})
+            \end{itemize}
+
+            Where \texttt{w} = width and \texttt{p} = precision. No more than
+            \texttt{w} digits total, \texttt{p} after decimal point.
+
+        \item Floating point
+            \begin{itemize}
+                \item \texttt{REAL} - 32-bit
+                \item \texttt{DOUBLE PRECISION} - 64-bit
+            \end{itemize}
+
+        \item Strings
+            \begin{itemize}
+                \item \texttt{CHAR(n)} - strings of exactly $n$ characters.
+                \item \texttt{VARCHAR(n)} - strings up to $n$ characters (space
+                    padding not necessary)
+                \item (Oracle) \texttt{VARCHAR2(n)} - exactly like \texttt{VARCHAR}
+                \item (Postgres) \texttt{TEXT} - USE THIS - essentially infinite
+                    width and indexable
+            \end{itemize}
+
+        \item Date/Time
+            \begin{itemize}
+                \item \texttt{DATE} - holds dates. Standard format: `YYYY-MM-DD'.
+                \item \texttt{TIME} - holds times. Standard format: `HH:MM:SS' or
+                    `HH:MM:SS.nnn' (fractional seconds). By default, this is time
+                    without timezone.
+                \item \texttt{TIME WITH TIMEZONE} - same as time, but with timezone
+                \item \texttt{TIMESTAMP} - time and date
+            \end{itemize}
+
+        \item Typecasting
+            \begin{minted}{postgresql}
+                SELECT CAST('1/2/2016' AS DATE) AS foo;
+            \end{minted}
+
+    \end{itemize}
+
+    \section{\texttt{INSERT}, \texttt{DELETE}, \texttt{UPDATE}}
+    \begin{minted}{postgresql}
+        INSERT INTO table VALUES (v1, v2, ...);
+        INSERT INTO table (a1, a2, ..., an) VALUES (v1, v2, ..., vn);
+        INSERT INTO table (a1, ..., an) VALUES (v1, ..., vn), (v1, ..., vn)
+
+        -- important to use WHERE condition here
+        DELETE FROM table WHERE condition;
+        UPDATE table_name SET a1 = v1, a2 = v2, ... WHERE condition;
+    \end{minted}
+
+    \newpage
+    \section{Aggregate Functions}
+    summarize data in a table for some column
+    \begin{itemize}
+        \item \texttt{COUNT} - counts the non-null entries in a column, or tuples
+            \begin{minted}{postgresql}
+            SELECT COUNT(*) FROM ...
+            \end{minted}
+
+            Can be used with \texttt{DISTINCT} as well.
+
+        \item \texttt{SUM} - adds up the entries in a column
+
+        \item \texttt{MAX/MIN} - the maximum/minimum entry in a column
+
+        \item \texttt{AVG} and others
+    \end{itemize}
+
+    \subsection{\texttt{GROUP BY}}
+    \begin{minted}{postgresql}
+        SELECT a1, a2, ..., f(a3), f(a4), ...
+          FROM table1, table2, ... WHERE ...
+         GROUP BY a1, a2, ...
+         ORDER BY ...
+    \end{minted}
+
+    \texttt{a1, a2, ...} must be in the \texttt{GROUP BY}.
+
+    \section{Set Operations in SQL}
+    \subsection{Operators}
+    \begin{itemize}
+        \item \texttt{UNION} - union of two sets of tuples (types and number of
+            attributes must be compatible) - all rows in both relations
+        \item \texttt{INTERSECTION} - all rows in common
+        \item \texttt{EXCEPT} - set difference: all rows in the first relation
+            \textbf{not in} the second relation
+    \end{itemize}
+
+    \begin{minted}{postgresql}
+    SELECT ... UNION SELECT ...;
+    SELECT ... INTERSECTION SELECT ...;
+    SELECT ... EXCEPT SELECT ...;
+    \end{minted}
 
     \section{Examples}
     \begin{minted}{postgresql}
@@ -102,11 +220,26 @@
           FROM mines_courses as mc, mines_eecs.faculty AS mec
          WHERE mc.instructor = mef.name;
     \end{minted}
+
     \begin{minted}{postgresql}
         SELECT * FROM foo WHERE bar = 3 ORDER BY alpha, beta, gamma;
     \end{minted}
 
+    \subsection{Grouping}
+    \begin{minted}{postgresql}
+        SELECT a1, a2, ..., f(a3), f(a4), ...
+          FROM ... WHERE ...
+         GROUP BY a1, a2, ...;
+    \end{minted}
 
+    Result: divides tuples in relation into groups characterized by unique values of
+    the group by attributes; aggregates are computed over the groups.
+
+    \begin{minted}{postgresql}
+        SELECT COUNT(*), instructor FROM mines_courses
+         GROUP BY instructor
+         ORDER BY COUNT(*) DESC;
+    \end{minted}
 \end{multicols*}
 
 \end{document}
