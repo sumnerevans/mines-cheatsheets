@@ -5,9 +5,108 @@
 
 \begin{document}
 
-\begin{multicols}{2}
-    \section{Test}
-    This is some text
-\end{multicols}
+\begin{multicols*}{2}
+    \section{Overview}
+    \begin{minted}{postgresql}
+        SELECT <attributes>
+          FROM <tablenames>
+         WHERE <condition>;
+    \end{minted}
+
+    \begin{itemize}
+        \item \texttt{<attributes>} - the attributes to select
+        \item \texttt{<tablenames>} - the table names to select from
+        \item \texttt{<condition>} is a boolean expression on the attributes of
+            the table
+
+    \end{itemize}
+
+    \section{\texttt{WHERE} Condition}
+    \begin{itemize}
+        \item \texttt{<>} $\equiv$ not equals
+
+        \item other operators include \texttt{<,>,<=,>=, BETWEEN}.
+            (\texttt{BETWEEN} is inclusive.)
+            \begin{minted}{postgresql}
+                        ... WHERE max_credits BETWEEN 3 AND 6;
+            \end{minted}
+
+        \item compound expressions: \texttt{AND, OR, NOT}
+
+        \item Testing for \texttt{NULL}: must use \texttt{IS NULL} or
+            \texttt{IS NOT NULL}
+
+        \item \texttt{LIKE} and \texttt{NOT LIKE}
+            \begin{minted}{postgresql}
+                ... WHERE instructor LIKE 'Paint%';
+            \end{minted}
+
+        \item \texttt{IN}
+            \begin{minted}{postgresql}
+               ... WHERE x IN (1, 2, 3);
+            \end{minted}
+    \end{itemize}
+
+    \section{Select Statements}
+    \subsection{Selecting Expressions on Attributes}
+    \begin{minted}{postgresql}
+    SELECT 42 / 13 + 12; -- selects 15 (integer math)
+    SELECT a || ' ' || b || ' ' || c FROM foo; -- string concatenation
+    SELECT substring(a FROM 1 FOR 4) FROM foo; -- first four characters
+    \end{minted}
+
+    \subsection{Names and Aliasing}
+    \texttt{AS} - used for renaming
+
+    \begin{minted}{postgresql}
+    SELECT substring(foo FROM 1 FOR 4) as f, bar as b FROM baz;
+    \end{minted}
+
+    \subsection{Schemas}
+    \begin{minted}{postgresql}
+        -- given "project1" in cpainter and "project1" in public
+        SELECT * FROM public.project1; -- selets the public one
+    \end{minted}
+
+    \subsection{Misc}
+    \begin{minted}{postgresql}
+    SELECT count(*) FROM mines_courses_meetings;
+    SELECT DISTINCT a1, a2, a3 ...
+    \end{minted}
+
+    \section{Joins}
+    \begin{minted}{postgresql}
+        SELECT * FROM A, B WHERE A.x = B.x;
+        SELECT * FROM A JOIN B ON B.x = A.x; -- using join syntax
+    \end{minted}
+
+    \section{Order By}
+    \begin{minted}{postgresql}
+    ... ORDER BY attr DESC/ASC
+    \end{minted}
+
+    \section{Table Creation}
+    \begin{minted}{postgresql}
+        CREATE TABLE [schema_name.]table_name
+        (
+            attribute1 type1 NOT NULL, -- you can add constraints
+            attribute2 type2 PRIMARY KEY,
+            attribute3 type3
+        )
+    \end{minted}
+
+    \section{Examples}
+    \begin{minted}{postgresql}
+        SELECT mc.instructor, mc.course_id,
+               mef.office, mef.email
+          FROM mines_courses as mc, mines_eecs.faculty AS mec
+         WHERE mc.instructor = mef.name;
+    \end{minted}
+    \begin{minted}{postgresql}
+        SELECT * FROM foo WHERE bar = 3 ORDER BY alpha, beta, gamma;
+    \end{minted}
+
+
+\end{multicols*}
 
 \end{document}

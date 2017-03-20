@@ -16,15 +16,10 @@
 }
 
 % Options for 10pt, 11pt, or 12pt fonts
-\newcommand{\@fontSize}{12pt}
+\newcommand{\@fontSize}{10pt}
 \DeclareVoidOption{10pt}{\renewcommand{\@fontSize}{10pt}}
 \DeclareVoidOption{11pt}{\renewcommand{\@fontSize}{11pt}}
 \DeclareVoidOption{12pt}{\renewcommand{\@fontSize}{12pt}}
-
-% Options for setting margins uniformly
-% i.e., left, right, top, and bottom all at once
-% The default margin size depends on the font size.
-\DeclareStringOption[]{margins}[]
 
 % All other options get passed to the article class
 \DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{article}}
@@ -46,11 +41,11 @@
 \newcommand{\cheatsheetname}[1]{\renewcommand{\@cheatsheetname}{#1}}
 
 % Set page margin size using the geometry package
-\RequirePackage[margin=0.3in,includefoot,includehead]{geometry}
+\RequirePackage[margin=0.2in,headsep=0.1in,footskip=0.1in,includefoot,includehead]{geometry}
 
 % Minted to make code look awesome
 \RequirePackage{minted}
-\setminted{autogobble,python3,mathescape,framesep=2mm,fontsize=\footnotesize}
+\setminted{autogobble,python3,mathescape,frame=lines,framesep=2mm,fontsize=\footnotesize}
 
 % Fancyhdr to make the headers nice
 \RequirePackage{fancyhdr}
@@ -63,12 +58,12 @@
 \RequirePackage{titlesec}
 
 \pagenumbering{gobble}
-\titleformat{\section}{\normalfont\scshape\bfseries\raggedright}{\thesection}{2em}{}
-\titleformat{\subsection}{\normalfont\scshape\bfseries\raggedright}{\thesubsection}{1.5em}{}
-\titleformat{\subsubsection}{\normalfont\scshape\bfseries\raggedright}{\thesubsubsection}{1em}{}
-\titlespacing{\section}{0pt}{\parskip}{-\parskip}
-\titlespacing{\subsection}{0pt}{\parskip}{-\parskip}
-\titlespacing{\subsubsection}{0pt}{\parskip}{-\parskip}
+\titleformat{\section}{\normalfont\fontsize{13pt}{13pt}\scshape\bfseries\raggedright}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{10pt}{10pt}\scshape\bfseries\raggedright}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{10pt}{10pt}\scshape\bfseries\raggedright}{\thesubsubsection}{1em}{}
+\titlespacing{\section}{0pt}{0.5\parskip}{-0.5\parskip}
+\titlespacing{\subsection}{0pt}{0.5\parskip}{-0.5\parskip}
+\titlespacing{\subsubsection}{0pt}{0.5\parskip}{-0.5\parskip}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Mathematics Packages %%%
@@ -82,5 +77,10 @@
 % Other stuff
 \RequirePackage{parskip} % Remove paragraph indentation
 
+% Reduce spacing between lists
+\usepackage{enumitem}
+\setlist{nolistsep}
+
 % Multiple columns by default
 \RequirePackage{multicol}
+\setlength{\columnseprule}{1pt}
