@@ -59,7 +59,7 @@
 
 \pagenumbering{gobble}
 \titleformat{\section}{\normalfont\fontsize{12pt}{12pt}\scshape\bfseries\raggedright}{\thesection}{1em}{}
-\titleformat{\subsection}{\normalfont\fontsize{10pt}{10pt}\scshape\bfseries\raggedright}{\thesubsection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{11pt}{11pt}\scshape\bfseries\raggedright}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}{\normalfont\fontsize{10pt}{10pt}\scshape\bfseries\raggedright}{\thesubsubsection}{1em}{}
 \titlespacing{\section}{0pt}{0.5\parskip}{-0.5\parskip}
 \titlespacing{\subsection}{0pt}{0.5\parskip}{-0.5\parskip}
