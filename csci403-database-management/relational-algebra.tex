@@ -14,7 +14,7 @@
             An ordered and named collection of values
 
             Ex: \texttt{(`Mehta, Dinesh', `CSCI 406', `ALGORITHMS')}
-        \item \textbf{Attributes} - 
+        \item \textbf{Attributes} -
             Formally, the attributes are a set
 
             Ex: \texttt{(`instructor', `course-id', `title')}
@@ -24,7 +24,7 @@
         \item \textbf{Relation Schema}:
             \begin{itemize}
                 \item A relation schema $R$ is denoted as $R(A_1,
-                    A_2,\dots,A_n)$ where $n$ is the \textbf{degree} of the 
+                    A_2,\dots,A_n)$ where $n$ is the \textbf{degree} of the
                     relation and $A_i$ is an \textbf{attribute}.
                 \item Describes how data is stored in a table.
                 \item Each attribute has a domain that constrains the values
@@ -48,7 +48,7 @@
 
         \item \textbf{Constraints} -
             Limit what values can be present in relation. This can be dependent
-            on the the schema, values in the relation itself, and/or the values in a 
+            on the the schema, values in the relation itself, and/or the values in a
             separate relation.
 
         \item \textbf{Superkey} -
@@ -61,7 +61,7 @@
                     set of all attributes of the schema
             \end{itemize}
 
-        \item \textbf{Key} - A \textit{minimal} superkey of a relation schema. 
+        \item \textbf{Key} - A \textit{minimal} superkey of a relation schema.
             No attribute can be removed without destroying the superkey property.
 
         \item \textbf{Candidate Keys} - All the keys of a schema are called
@@ -150,13 +150,14 @@
     \subsubsection{Representations}
     \begin{enumerate}
         \item nesting: example
-            \[ \rho_{(name, courseid)}(\pi_{instructor,
-            courseid}(\sigma_{department='CS'}(mines\_courses))) \]
+            \begin{align*}
+                \rho_{(name, courseid)}(\pi_{instructor, courseid}(\\\sigma_{department='CS'}(mines\_courses)))
+            \end{align*}
             \begin{minted}{postgresql}
-        SELECT instructor AS name
-               course_id
-          FROM mines_courses
-         WHERE department = 'CS';
+                SELECT instructor AS name
+                       course_id
+                  FROM mines_courses
+                 WHERE department = 'CS';
             \end{minted}
 
         \item sequence of named relations
@@ -188,8 +189,7 @@
             attributes $|A \times B| = |A| \times |B|$.
         \item Typical Usage:
             \[\sigma_{condition}(A \times B) \equiv A \bowtie_{condition} B\]
-        \item Example: \(mines\_courses \bowtie_{instructor = name}
-            mines\_eecs\_faculty\)
+        \item Example: \(foo \bowtie_{a = b} bar\)
     \end{itemize}
 
     \subsection{Theta Joins}
@@ -214,7 +214,7 @@
             $A * B$ - books notation \\
             $A \bowtie B$ - other people's notation
 
-            Example: both \texttt{mines\_courses} and
+            Example: both \texttt{mines\_courses} and\\
             \texttt{mines\_courses\_meetings} have \texttt{crn} field. Then
             $mines\_courses * mines\_courses\_meetings$. (Note, this
             automatically projects away duplicate column(s).)
