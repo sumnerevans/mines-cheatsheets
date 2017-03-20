@@ -10,111 +10,84 @@
 \begin{multicols*}{2}
     \section{Overview}
     \begin{itemize}
-        \item \textbf{tuple}: an ordered and named collection of values
+        \item \textbf{Tuple} -
+            An ordered and named collection of values
 
             Ex: \texttt{(`Mehta, Dinesh', `CSCI 406', `ALGORITHMS')}
-        \item \textbf{attributes}: formally, the attributes are a set
+        \item \textbf{Attributes} - 
+            Formally, the attributes are a set
 
             Ex: \texttt{(`instructor', `course-id', `title')}
-        \item \textbf{domain}: each attribute has associated domain from which
+        \item \textbf{Domain} -
+            Each attribute has associated domain from which
             values come
-        \item \textbf{relation schema}:
+        \item \textbf{Relation Schema}:
             \begin{itemize}
                 \item A relation schema $R$ is denoted as $R(A_1,
-                    A_2,\dots,A_n)$.
-                \item Has \textbf{degree} $n$
-                \item Attributes $A_i$
-                \item Each attribute has associated domain: $Dom(A_i)$
+                    A_2,\dots,A_n)$ where $n$ is the \textbf{degree} of the 
+                    relation and $A_i$ is an \textbf{attribute}.
+                \item Describes how data is stored in a table.
+                \item Each attribute has a domain that constrains the values
+                    that can be associated with it.
             \end{itemize}
 
-        \item \textbf{relation or relation state}:
+        \item \textbf{Relation or Relation State}:
             \begin{itemize}
                 \item A relation is a set of tuples $r(R)$ conforming to the
-                    relation schema: for any tuple $t \in r$ $$t = (v_1, v_2,
-                    \dots, v_n) : v_i \in Dom(A_i)$$
-
-                \item In other words: $r(R) \subseteq (dom(A_1) \times dom(A_2)
-                    \times \cdots \times dom(A_n))$
-
-                \item \textbf{In actuality} real RDBMS
-                    \begin{itemize}
-                        \item tables may contain duplicates
-                        \item no ordering of tuples
-                    \end{itemize}
-
+                    relation schema. In SQL terms, each tuple forms a row.
+                \item Each element in a tuple maps to an attribute of the schema.
+                \item As relations are sets, duplicate rows are ignored.
             \end{itemize}
 
-        \item \textbf{\texttt{NULL}}
-
-            A "value" that can exist in a relational database representing
+        \item \textbf{\texttt{NULL}} -
+            Some values can me unknown, irrelevant, or missing.
             \begin{itemize}
-                \item a value is unknown
-                \item value is irrelevant
-                \item value is missing
+                \item NULL values can not be compared with other values.
+                \item Can only check IS NULL.
             \end{itemize}
 
-            \textbf{problems with \texttt{NULL}}
-            \begin{itemize}
-                \item \texttt{NULL} values cannot be compared
-                    $$a = b, a\ is\ NULL, b\ is\ NULL \rightarrow false$$
+        \item \textbf{Constraints} -
+            Limit what values can be present in relation. This can be dependent
+            on the the schema, values in the relation itself, and/or the values in a 
+            separate relation.
 
-                    instead we have \texttt{ISNULL} operator
-            \end{itemize}
-
-        \item \textbf{constraints}
-            \begin{itemize}
-                \item on the relation schema
-                \item between relation schemas
-            \end{itemize}
-
-        \item \textbf{superkey} - A superkey of $R$ is a subset of $R$'s
+        \item \textbf{Superkey} -
+            A superkey of $R$ is a subset of $R$'s
             attributes such that no relation $r(R)$ may contain tuples with
             exactly the same values for attributes in the superkey.
             \begin{itemize}
-                \item any superset of a superkey is also a superkey
-                \item every relation (in theory) has at least one superkey - the
+                \item Any superset of a superkey is also a superkey
+                \item Every relation (in theory) has at least one superkey - the
                     set of all attributes of the schema
             \end{itemize}
 
-        \item \textbf{Key} - A superkey s.t.\ no attribute can be removed from
-            the key without destroying the superkey property: a \textit{minimal}
-            superkey
+        \item \textbf{Key} - A \textit{minimal} superkey of a relation schema. 
+            No attribute can be removed without destroying the superkey property.
 
         \item \textbf{Candidate Keys} - All the keys of a schema are called
-            \textit{candidate keys}
+            \textit{candidate keys}.
 
         \item \textbf{Primary Key} - By convention, we choose one candidate key
-            as the \textit{primary key}
+            as the \textit{primary key}.
 
             \begin{itemize}
-                \item we tend to prefer ``smaller'' keys (e.g. \texttt{crn})
-                \item in practice in SQL DB:
+                \item ''Smaller'' keys are preferred. (e.g. \texttt{crn})
+                \item In practice in SQL DB:
                     \begin{itemize}
-                        \item primary keys impose uniqueness constraint on data
-                        \item other candidate keys $\rightarrow$ impose
-                            uniqueness constraint
+                        \item Primary keys impose uniqueness constraint on data.
+                        \item Other candidate keys $\rightarrow$ impose
+                            uniqueness constraints.
                     \end{itemize}
             \end{itemize}
 
-        \item \textbf{Referential Integrity/Foreign Key Constraint} Constraint
+        \item \textbf{Referential Integrity/Foreign Key Constraint} - Constraint
             on the relationship between relations. A \textit{foreign key} is a
             subset of attributes of a relation schema with the property that its
             values are either \texttt{NULL} or existing in the specified
             attributes of a referenced table.
     \end{itemize}
 
-    \section{Relational Theory}
-    \begin{itemize}
-        \item each relation is a \textbf{set} of tuples
-        \item tuple = set of values associated with named attributes
-        \item \textbf{Relational Algebra}
-            \begin{itemize}
-                \item useful operations that can be applied to relations
-                \item resulting algebra
-            \end{itemize}
-    \end{itemize}
-
-    \section{Unary Operations $-2 + 1$}
+    \section{Unary Operations}
     \subsection{Selection}
     \begin{itemize}
         \item Chooses subsets of tuples from a relation according to some
