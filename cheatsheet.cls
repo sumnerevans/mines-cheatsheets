@@ -1,7 +1,7 @@
 % LaTeX class for typesetting cheatsheets
 % By: Jonathan Sumner Evans
 % Most recent version here:
-% https://github.com/sumnerevans/mines-cheatsheets/blog/master/cheatsheet.cls
+% https://github.com/sumnerevans/mines-cheatsheets/blob/master/cheatsheet.cls
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{cheatsheet}[2017/03/19 LaTeX class for typesetting cheatsheets]
