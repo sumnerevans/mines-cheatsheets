@@ -1,0 +1,178 @@
+\documentclass{../cheatsheet}
+
+\course{CSCI 341 --- Computer Organization}
+\cheatsheetname{Cache}
+
+\begin{document}
+
+\begin{multicols*}{2}
+    \section{Memory Hierarchy}
+    \begin{tabular}{l c}
+        Processor (registers) & Fast, small, expensive \\
+        Cache & $\downarrow$ \\
+        Main Memory & $\downarrow$ \\
+        Disk & Slow, large, cheap
+    \end{tabular}
+
+    \begin{itemize}
+        \item \textbf{Hit}: data appears in some block in the upper levels of
+            memory (closer to the processor)
+            \begin{itemize}
+                \item \textbf{Hit Rate}: the fraction of memory access found in
+                    the upper level
+                \item \textbf{Hit Time}: the time to access the upper level \\
+                    = memory access time + time to determine hit/miss
+            \end{itemize}
+
+        \item \textbf{Miss}: data needs to be retrieved from a block in the
+            lower level of memory.
+            \begin{itemize}
+                \item \textbf{Miss Rate}: 1 - (hit rate)
+                \item \textbf{Miss Penalty} = time to replace block in upper
+                    level + time to deliver block to processor
+            \end{itemize}
+
+        \item \textbf{average access time}\\
+            = hit time $\times$ hit rate + miss penalty $\times$ miss rate
+
+        \item \textbf{average memory access time (AMAT)}\\
+            = hit time + miss penalty $\times$ miss rate
+    \end{itemize}
+
+    \section{Cache}
+    \subsection{Direct-Mapped Cache}
+    \begin{itemize}
+        \item Each memory address is associated with one possible \textit{block}
+            within the cache
+        \item \textbf{Block}: the unit of transfer between cache and memory
+        \item Address in Direct-Mapped Cache\\
+            \begin{tabular}{|c c c | c | c|}
+                \hline
+                t & a & g & idx & o \\
+                \hline
+            \end{tabular}
+            \begin{itemize}
+                \item \textbf{tag}: to check if have correct block
+                \item \textbf{index}: to select block (which "row")
+                \item \textbf{byte offset} within block
+            \end{itemize}
+        \item larger cache blocks take better advantage of spacial locality
+        \item every block has a \textit{valid bit} determines whether anything
+            stored in that row
+    \end{itemize}
+
+    \subsubsection{Example}
+    16KB of data in direct-mapped cache with 4 word blocks. Determine size of
+    tag, index and offset fields (given 32-bit architecture)
+    \begin{itemize}
+        \item \textbf{index}: \# blocks = 16 KB / $2^4$ = $2^{10}$ B
+            $\rightarrow$ 10 bits
+        \item \textbf{byte offset}: 4 words = 16 bytes = $2^4$ bytes
+            $\rightarrow$ 4 bits
+        \item \textbf{tag}: 32 - 4 - 10 = 18 $\rightarrow$ 18 bits
+    \end{itemize}
+
+    \subsubsection{Impact of Large Block Size}
+    \begin{itemize}
+        \item \textbf{benefit}: reduce miss rate (takes advantage of spacial
+            locality)
+        \item \textbf{drawbacks}: larger miss penalty (takes longer to load new
+            block from next level) and possibly a higher miss rate
+    \end{itemize}
+
+    \subsection{Fully Associative Cache}
+    \begin{itemize}
+        \item no rows, basically a hash map
+        \item \textbf{benefits}: no conflicts among different memory addresses
+        \item \textbf{drawbacks}: need hardware comparator for every single
+            entry: this is infeasible
+    \end{itemize}
+
+    \subsection{N-Way Set Associative Cache}
+    \begin{itemize}
+        \item memory address fields: tag (same as before), offset (same as
+            before), index (points us to correct row (called a set in this
+            case))
+        \item cache is direct-mapped with respect to sets, each set is set
+            associative
+        \item has best of direct-mapped and fully associative
+    \end{itemize}
+
+    \subsection{Examples: Number of Bits Needed}
+    64 KB of data and one word blocks\\
+    64 KB = 16 K words = $2^{14}$ words = $2^{14}$ blocks
+    \begin{itemize}
+        \item \textbf{direct-mapped cache}\\
+            block size = 4 bytes $\rightarrow$ offset size = 2 bits\\
+            \# sets = \# blocks = $2^{14}$ $\rightarrow$ index size = 14 bits\\
+            tag size = 32 - 14 - 2 = 16 bits\\
+            bits/block = data + tag + valid = 32 + 16 + 1 = 49\\
+            bits/cache = \# blocks $\times$ bit/block = $2^{14} \times 49 = 98$
+            KB
+
+        \item \textbf{4-way set associative}\\
+            block size = 4 bytes $\rightarrow$ offset size = 2 bits\\
+            \# sets = \# blocks/4 = $2^{14}/4 = 2^{12}$ $\rightarrow$ index size
+            = 12 bits\\
+            tag size = 32 - 12 - 2 = 18 bits\\
+            bits/block = data + tag + valid = 32 + 18 + 1 = 51\\
+            bits/cache = \# blocks $\times$ bit/block = $2^{14} \times 51 = 102$
+            KB
+
+        \item \textbf{increase associativity $\rightarrow$ increase bits in
+            cache}
+
+        \item \textbf{8 word blocks}\\
+            64 KB = $2^{14}$ words = $2^{14}/8$ blocks = $2^{11}$ blocks\\
+            block size = 4 words = 32 bytes $\rightarrow$ offset size = 5 bits\\
+            \# sets = \# blocks = $2^{11} \rightarrow$ index size = 11 bits\\
+            tag size = address - index - offset = 32 - 11 - 5 = 18 bits\\
+            bits/block = data + tag + valid = $8 \times 32 + 16 + 1 = 273$bits\\
+            bits/cache = \# blocks $\times$ bit/block = $2^{11} \times273=68.25$
+            KB
+
+        \item \textbf{increase block size $\rightarrow$ decrease bits in cache}
+    \end{itemize}
+
+    \subsection{Accessing a Cache}
+    \begin{itemize}
+        \item \textbf{cache hit}: cache block is valid and contains proper
+            address, read the desired word
+        \item \textbf{cache miss}: nothing in cache in appropriate block, fetch
+            from memory
+        \item \textbf{cache miss, block replacement}: wrong data is in cache at
+            appropriate block, so discard it and fetch desired data from memory
+        \item \textbf{Types of Cache Misses}
+            \begin{itemize}
+                \item Compulsory Miss: occur when program first starts
+                \item Conflict Misses: occurs when two addresses map to the same
+                    cache location (problem in direct-mapped cache)
+                \item Capacity Misses: miss that occurs because the cache has
+                    limited size (problem in fully associative caches)
+            \end{itemize}
+    \end{itemize}
+
+    \subsection{Block Replacement}
+    \begin{itemize}
+        \item if there are any locations with valid bit of 0, usually write over
+            that
+        \item if all possible locations already have valid block, choose
+            replacement strategy
+            \begin{itemize}
+                \item random (simple to implement)
+                \item least-recently used (LRU) (expensive)
+            \end{itemize}
+    \end{itemize}
+
+    \subsection{Mulit-Level Cache Hierarchy}
+    Given 2 levels of cache:\\
+    AMAT = L1 hit time + L1 miss rate $\times$ \textbf{L1 miss penalty}\\
+    L1 miss penalty = L2 hit time + L2 miss rate $\times$ L2 miss penalty
+
+    \section{Examples}
+    \subsection{Average Memory Address Time (AMAT)}
+    Assume: hit time = 1 cycle, miss rate = 5\%, miss penalty = 20 cycles\\
+    AMAT = $1 + 0.05 \times 20 = 1 + 1 cycles = 2 cycles$
+\end{multicols*}
+
+\end{document}
