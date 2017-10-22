@@ -1,0 +1,33 @@
+\documentclass{../cheatsheet}
+\usepackage{tabularx}
+
+\course{CSCI 358 - Discrete Math}
+\cheatsheetname{Midterm Cheatsheet}
+
+\begin{document}
+
+\begin{multicols*}{2}
+    \section{Logical Equivalences}
+    \begin{tabularx}{\columnwidth}{l| l}
+        \hline
+        $p \wedge True \equiv p \equiv p \vee False$ & identity \\
+        \hline
+        $p \vee T \equiv T$ \\ $p \wedge F \equiv F$ & domination \\
+        \hline
+        $p \vee p \equiv p$ \\ $p \wedge p \equiv p$ & idempotent \\
+        \hline
+        $\neg(\neg p) \equiv p$ & double negation \\
+        \hline
+        $p \vee q \equiv q \vee p$ \\$p\wedge q \equiv q \wedge p$ & commutative\\
+        \hline
+        $(p \vee q) \vee r \equiv p \vee (q \vee r)$ & associative \\
+        \hline
+        $p \vee (q \wedge r) \equiv (p \vee q) \wedge (p \vee r)$ \\
+        $p \wedge (q \vee r) \equiv (p \wedge q) \vee (p \wedge r)$ &
+        distributive \\
+        \hline
+
+    \end{tabularx}
+\end{multicols*}
+
+\end{document}
